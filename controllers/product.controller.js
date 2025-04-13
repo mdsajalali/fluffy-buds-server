@@ -7,30 +7,38 @@ const createProduct = async (req, res) => {
     const { name, description, price, discount, category, sizes, colors } =
       req.body;
 
-    const { images } = req.files;
-    if (!req.files || Object.keys(req.files).length === 0) {
+    if (!req.files || !req.files.images) {
       return res.status(400).json({ errors: "No file uploaded" });
     }
 
-    const allowedFormat = ["image/png", "image/jpeg"];
-    if (!allowedFormat.includes(images.mimetype)) {
-      return res
-        .status(400)
-        .json({ errors: "Invalid file format. Only PNG and JPG are allowed" });
+    const files = Array.isArray(req.files.images)
+      ? req.files.images
+      : [req.files.images];
+
+    const allowedFormats = ["image/png", "image/jpeg", "image/jpg"];
+    const uploadedImages = [];
+
+    for (const file of files) {
+      const type = file.mimetype.toLowerCase();
+
+      if (!allowedFormats.includes(type)) {
+        return res.status(400).json({
+          errors: "Invalid file format. Only PNG, JPEG, and JPG are allowed",
+        });
+      }
+
+      const cloud_response = await cloudinary.uploader.upload(
+        file.tempFilePath
+      );
+
+      if (!cloud_response || cloud_response.error) {
+        return res.status(400).json({
+          errors: "Error uploading file to Cloudinary",
+        });
+      }
+
+      uploadedImages.push({ url: cloud_response.url });
     }
-
-    // cloudinary code start here
-    const cloud_response = await cloudinary.uploader.upload(
-      images.tempFilePath
-    );
-
-    if (!cloud_response || cloud_response.error) {
-      return res
-        .status(400)
-        .json({ errors: "Error uploading file to cloudinary" });
-    }
-
-    // cloudinary code end here
 
     const product = new productModel({
       name,
@@ -40,20 +48,19 @@ const createProduct = async (req, res) => {
       category,
       sizes,
       colors,
-      images: {
-        url: cloud_response.url,
-      },
+      images: uploadedImages,
     });
 
     await product.save();
-    res.json({
+
+    res.status(201).json({
       success: true,
       message: "Product created successfully",
       product,
     });
   } catch (error) {
     console.log(error);
-    res.json({ success: false, message: "Error creating product" });
+    res.status(500).json({ success: false, message: "Error creating product" });
   }
 };
 

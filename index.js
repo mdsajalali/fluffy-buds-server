@@ -1,20 +1,14 @@
+import { v2 as cloudinary } from "cloudinary";
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
-import { connectDB } from "./config/db.js";
-import { createProduct } from "./controllers/product.controller.js";
-import { v2 as cloudinary } from "cloudinary";
 import fileUpload from "express-fileupload";
+import { connectDB } from "./config/db.js"; 
+import productRoute from "./routes/product.route.js";
 
 // app config
 const app = express();
 const port = 5000;
-app.use(
-  fileUpload({
-    useTempFiles: true,
-    tempFileDir: "/tmp/",
-  })
-);
 
 // db connection
 connectDB();
@@ -22,9 +16,15 @@ connectDB();
 // middleware
 app.use(express.json());
 app.use(cors());
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+  })
+);
 
 // api endpoints
-app.use("/v1/api", createProduct);
+app.use("/v1/api", productRoute);
 
 app.get("/", (req, res) => {
   res.send("API Working");

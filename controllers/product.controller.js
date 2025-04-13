@@ -1,6 +1,24 @@
 import { v2 as cloudinary } from "cloudinary";
 import productModel from "../models/product.model.js";
 
+// get all products
+const getProducts = async (req, res) => {
+  try {
+    const products = await productModel.find({});
+    res.status(200).json({
+      success: true,
+      message: "Products fetched successfully",
+      products,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching products",
+    });
+  }
+};
+
 // create product
 const createProduct = async (req, res) => {
   try {
@@ -64,4 +82,4 @@ const createProduct = async (req, res) => {
   }
 };
 
-export { createProduct };
+export { createProduct, getProducts };

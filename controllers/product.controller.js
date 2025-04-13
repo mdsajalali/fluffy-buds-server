@@ -1,14 +1,70 @@
 import { v2 as cloudinary } from "cloudinary";
 import productModel from "../models/product.model.js";
 
-// get all products
+// get all products with filters, pagination, and sorting
 const getProducts = async (req, res) => {
   try {
-    const products = await productModel.find({});
+    const {
+      page = 1,
+      name,
+      minPrice,
+      maxPrice,
+      size,
+      color,
+      category,
+      sort,
+    } = req.query;
+
+    const filters = {};
+    if (name) {
+      filters.name = { $regex: name, $options: "i" };
+    }
+    if (minPrice && maxPrice) {
+      filters.price = { $gte: minPrice, $lte: maxPrice };
+    }
+    if (size) {
+      filters.size = { $in: size.split(",") };
+    }
+    if (color) {
+      filters.color = { $in: color.split(",") };
+    }
+    if (category) {
+      filters.category = { $in: category.split(",") };
+    }
+
+    // Pagination settings
+    const perPage = 9;
+    const skip = (page - 1) * perPage;
+
+    let sortCriteria = { createdAt: -1 };
+
+    if (sort) {
+      if (sort === "high-to-low") {
+        sortCriteria = { price: -1 };
+      } else if (sort === "low-to-high") {
+        sortCriteria = { price: 1 };
+      }
+    }
+
+    // Get total product count based on filters
+    const totalProducts = await productModel.countDocuments(filters);
+
+    // Fetch products with pagination and sorting
+    const products = await productModel
+      .find(filters)
+      .skip(skip)
+      .limit(perPage)
+      .sort(sortCriteria);
+
     res.status(200).json({
       success: true,
       message: "Products fetched successfully",
       products,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(totalProducts / perPage),
+        totalProducts,
+      },
     });
   } catch (error) {
     console.log(error);

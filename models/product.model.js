@@ -12,7 +12,7 @@ const productSchema = new mongoose.Schema({
   price: {
     type: Number,
     required: true,
-  }, 
+  },
   discount: {
     type: Number,
     required: true,
@@ -29,10 +29,11 @@ const productSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
-  images: {
-    type: [String],
-    required: true,
-  },
+  images: [
+    {
+      url: { type: String, required: true },
+    },
+  ],
 });
 
 const productModel =

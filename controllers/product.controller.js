@@ -166,4 +166,46 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-export { createProduct, deleteProduct, getProducts };
+// update product by id
+const updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description, price, discount, category, sizes, colors } =
+      req.body;
+
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      id,
+      {
+        name,
+        description,
+        price,
+        discount,
+        category,
+        sizes,
+        colors,
+      },
+      { new: true }
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Product updated successfully",
+      updatedProduct,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Error updating product",
+    });
+  }
+};
+
+export { createProduct, deleteProduct, getProducts, updateProduct };

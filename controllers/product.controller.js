@@ -75,6 +75,26 @@ const getProducts = async (req, res) => {
   }
 };
 
+// get all product without filters
+const getAllProducts = async (req, res) => {
+  try {
+    // Fetch all products without any conditions
+    const products = await productModel.find({});
+
+    res.status(200).json({
+      success: true,
+      message: "All products fetched successfully",
+      products,
+    });
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch products",
+    });
+  }
+};
+
 // get single product
 const getSingleProduct = async (req, res) => {
   try {
@@ -229,6 +249,7 @@ const updateProduct = async (req, res) => {
 export {
   createProduct,
   deleteProduct,
+  getAllProducts,
   getProducts,
   getSingleProduct,
   updateProduct,

@@ -3,7 +3,7 @@ import cors from "cors";
 import "dotenv/config";
 import express from "express";
 import fileUpload from "express-fileupload";
-import { connectDB } from "./config/db.js"; 
+import { connectDB } from "./config/db.js";
 import productRoute from "./routes/product.route.js";
 
 // app config
@@ -15,7 +15,14 @@ connectDB();
 
 // middleware
 app.use(express.json());
-app.use(cors());
+
+app.use(
+  cors({
+    origin: "http://localhost:5175",
+    credentials: true,
+  })
+);
+
 app.use(
   fileUpload({
     useTempFiles: true,
@@ -24,7 +31,7 @@ app.use(
 );
 
 // api endpoints
-app.use("/v1/api", productRoute);
+app.use("/api/v1", productRoute);
 
 app.get("/", (req, res) => {
   res.send("API Working");

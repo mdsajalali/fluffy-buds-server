@@ -8,7 +8,37 @@ const createToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
-// Register user controller
+// Login user
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.json({ success: false, message: "User doesn't exist" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.json({ success: false, message: "Invalid credentials" });
+    }
+
+    const token = createToken(user._id, user.role);
+
+    res.json({
+      success: true,
+      message: "Login successful",
+      token,
+    });
+  } catch (error) {
+    console.log("Login error:", error);
+    return res.json({ success: false, message: "Login failed" });
+  }
+};
+
+// Register user 
 const registerUser = async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword, role } =
     req.body;
@@ -74,4 +104,4 @@ const registerUser = async (req, res) => {
   }
 };
 
-export default registerUser;
+export { registerUser, loginUser };

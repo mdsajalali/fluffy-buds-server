@@ -5,6 +5,7 @@ import express from "express";
 import fileUpload from "express-fileupload";
 import { connectDB } from "./config/db.js";
 import productRoute from "./routes/product.route.js";
+import userRoute from "./routes/user.route.js";
 
 // app config
 const app = express();
@@ -32,6 +33,7 @@ app.use(
 
 // api endpoints
 app.use("/api/v1", productRoute);
+app.use("/api/v1/user", userRoute);
 
 app.get("/", (req, res) => {
   res.send("API Working");

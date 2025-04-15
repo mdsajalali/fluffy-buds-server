@@ -8,10 +8,16 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     confirmPassword: { type: String, required: true },
     cartData: { type: Object, default: {} },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+    },
   },
   { minimize: false }
 );
 
+// Remove confirmPassword before saving
 userSchema.pre("save", function (next) {
   this.confirmPassword = undefined;
   next();

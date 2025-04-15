@@ -26,7 +26,6 @@ const addToCart = async (req, res) => {
   }
 };
 
-
 // remove from cart
 const removeFromCart = async (req, res) => {
   try {
@@ -50,4 +49,19 @@ const removeFromCart = async (req, res) => {
   }
 };
 
-export { addToCart, removeFromCart };
+// get cart
+const getCart = async (req, res) => {
+  try {
+    let userData = await userModel.findById(req.body.userId);
+    let cartData = await userData.cartData;
+    res.json({ success: true, cartData });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      success: false,
+      message: "Failed to retrieve cart data.",
+    });
+  }
+};
+
+export { addToCart, getCart, removeFromCart };

@@ -8,9 +8,7 @@ const getProducts = async (req, res) => {
       page = 1,
       name,
       minPrice,
-      maxPrice,
-      size,
-      color,
+      maxPrice, 
       category,
       sort,
     } = req.query;
@@ -22,14 +20,7 @@ const getProducts = async (req, res) => {
     if (minPrice && maxPrice) {
       filters.price = { $gte: minPrice, $lte: maxPrice };
     }
-    if (size) {
-      filters.size = { $in: Array.isArray(size) ? size : [size] };
-    }
-
-    if (color) {
-      filters.color = { $in: Array.isArray(color) ? color : [color] };
-    }
-
+    
     if (category) {
       filters.category = category;
     }
@@ -118,7 +109,7 @@ const getSingleProduct = async (req, res) => {
 // create product
 const createProduct = async (req, res) => {
   try {
-    const { name, description, price, discount, category, sizes, colors } =
+    const { name, description, price, discount, category, size, color } =
       req.body;
 
     if (!req.files || !req.files.images) {
@@ -160,8 +151,8 @@ const createProduct = async (req, res) => {
       price,
       discount,
       category,
-      sizes,
-      colors,
+      size,
+      color,
       images: uploadedImages,
     });
 
@@ -210,7 +201,7 @@ const deleteProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, price, discount, category, sizes, colors } =
+    const { name, description, price, discount, category, size, color } =
       req.body;
 
     const updatedProduct = await productModel.findByIdAndUpdate(
@@ -221,8 +212,8 @@ const updateProduct = async (req, res) => {
         price,
         discount,
         category,
-        sizes,
-        colors,
+        size,
+        color,
       },
       { new: true }
     );

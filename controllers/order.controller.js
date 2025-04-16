@@ -109,4 +109,26 @@ const updateStatus = async (req, res) => {
   }
 };
 
-export { listOrders, placeOrder, updateStatus, userOrders, verifyOrder };
+
+// get total order and user
+const getTotalUserORders = async (req, res) => {
+  try {
+    const totalUsers = await userModel.estimatedDocumentCount();
+    const totalOrders = await orderModel.estimatedDocumentCount();
+
+    res.status(200).json({
+      success: true,
+      message: "Dashboard stats fetched successfully",
+      totalUsers,
+      totalOrders,
+    });
+  } catch (error) {
+    console.error("Error fetching dashboard stats:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch dashboard stats",
+    });
+  }
+};
+
+export { listOrders, placeOrder, updateStatus, userOrders, verifyOrder, getTotalUserORders };

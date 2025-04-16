@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  getTotalUserORders,
   listOrders,
   placeOrder,
   updateStatus,
@@ -14,5 +15,6 @@ orderRoute.post("/verify", verifyOrder);
 orderRoute.post("/my-orders", authMiddleware, userOrders);
 orderRoute.get("/list", listOrders);
 orderRoute.post("/status", updateStatus);
+orderRoute.get("/get-total-user-order", getTotalUserORders);
 
 export default orderRoute;

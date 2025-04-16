@@ -109,7 +109,6 @@ const updateStatus = async (req, res) => {
   }
 };
 
-
 // get total order and user
 // getTotalUserOrders;
 const getTotalUserOrdersSales = async (req, res) => {
@@ -137,12 +136,78 @@ const getTotalUserOrdersSales = async (req, res) => {
   }
 };
 
+// getLast12MonthsSales
+const getLast12MonthsSales = async (req, res) => {
+  try {
+    const last12MonthsSales = await orderModel.aggregate([
+      {
+        $match: {
+          date: {
+            $gte: new Date(
+              new Date().setFullYear(new Date().getFullYear() - 1)
+            ),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            month: { $month: "$date" },
+            year: { $year: "$date" },
+          },
+          totalSales: { $sum: "$amount" },
+        },
+      },
+      {
+        $sort: { "_id.year": -1, "_id.month": -1 },
+      },
+      {
+        $project: {
+          _id: 0,
+          month: "$_id.month",
+          year: "$_id.year",
+          totalSales: 1,
+        },
+      },
+      {
+        $limit: 12,
+      },
+    ]);
+
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    last12MonthsSales.reverse();
+
+    const formattedSalesData = last12MonthsSales.map((item) => ({
+      month: monthNames[item.month - 1],
+      sales: item.totalSales,
+    }));
+
+    res.status(200).json({ success: true, data: formattedSalesData });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
 
 export {
+  getLast12MonthsSales,
+  getTotalUserOrdersSales,
   listOrders,
   placeOrder,
   updateStatus,
   userOrders,
   verifyOrder,
-  getTotalUserOrdersSales,
 };

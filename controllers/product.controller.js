@@ -239,6 +239,17 @@ const updateProduct = async (req, res) => {
   }
 };
 
+
+// getTotalProductQuantity
+ const getTotalProductQuantity = async (req, res) => {
+  try {
+    const getTotalProducts = await productModel.estimatedDocumentCount();
+    res.status(200).json({ success: true, getTotalProducts });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
 export {
   createProduct,
   deleteProduct,
@@ -246,4 +257,5 @@ export {
   getProducts,
   getSingleProduct,
   updateProduct,
+  getTotalProductQuantity,
 };

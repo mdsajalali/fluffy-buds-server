@@ -23,17 +23,17 @@ const getProducts = async (req, res) => {
       filters.price = { $gte: minPrice, $lte: maxPrice };
     }
     if (size) {
-      filters.size = { $in: size.split(",") };
+      filters.size = { $in: size };
     }
     if (color) {
-      filters.color = { $in: color.split(",") };
+      filters.color = { $in: color };
     }
     if (category) {
-      filters.category = { $in: category.split(",") };
+      filters.category = { $in: category };
     }
 
     // Pagination settings
-    const perPage = 9;
+    const perPage = 6;
     const skip = (page - 1) * perPage;
 
     let sortCriteria = { createdAt: -1 };

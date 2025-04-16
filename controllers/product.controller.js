@@ -23,13 +23,15 @@ const getProducts = async (req, res) => {
       filters.price = { $gte: minPrice, $lte: maxPrice };
     }
     if (size) {
-      filters.size = { $in: size };
+      filters.size = { $in: Array.isArray(size) ? size : [size] };
     }
+
     if (color) {
-      filters.color = { $in: color };
+      filters.color = { $in: Array.isArray(color) ? color : [color] };
     }
+
     if (category) {
-      filters.category = { $in: category };
+      filters.category = category;
     }
 
     // Pagination settings
@@ -39,9 +41,9 @@ const getProducts = async (req, res) => {
     let sortCriteria = { createdAt: -1 };
 
     if (sort) {
-      if (sort === "high-to-low") {
+      if (sort === "highToLow") {
         sortCriteria = { price: -1 };
-      } else if (sort === "low-to-high") {
+      } else if (sort === "lowToHigh") {
         sortCriteria = { price: 1 };
       }
     }

@@ -109,7 +109,6 @@ const updateStatus = async (req, res) => {
   }
 };
 
-// get total order and user
 // getTotalUserOrders;
 const getTotalUserOrdersSales = async (req, res) => {
   try {
@@ -202,11 +201,23 @@ const getLast12MonthsSales = async (req, res) => {
   }
 };
 
+// recent orders
+const recentOrders = async (req, res) => {
+  try {
+    const orders = await orderModel.find().sort({ createdAt: -1 }).limit(5);
+    res.status(200).json({ success: true, orders });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
 export {
   getLast12MonthsSales,
   getTotalUserOrdersSales,
   listOrders,
   placeOrder,
+  recentOrders,
   updateStatus,
   userOrders,
   verifyOrder,

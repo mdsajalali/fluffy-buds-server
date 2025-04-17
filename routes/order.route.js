@@ -6,6 +6,7 @@ import {
   placeOrder,
   updateStatus,
   userOrders,
+  recentOrders,
   verifyOrder,
 } from "../controllers/order.controller.js";
 import authMiddleware from "../middleware/auth.js";
@@ -15,6 +16,7 @@ orderRoute.post("/place", authMiddleware, placeOrder);
 orderRoute.post("/verify", verifyOrder);
 orderRoute.post("/my-orders", authMiddleware, userOrders);
 orderRoute.get("/list", listOrders);
+orderRoute.get("/recent-orders", recentOrders);
 orderRoute.post("/status", updateStatus);
 orderRoute.get("/get-total-user-order-sales", getTotalUserOrdersSales);
 orderRoute.get("/get-last12-months-sales", getLast12MonthsSales);

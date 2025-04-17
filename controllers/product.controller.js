@@ -64,8 +64,7 @@ const getProducts = async (req, res) => {
 // get all product without filters
 const getAllProducts = async (req, res) => {
   try {
-    // Fetch all products without any conditions
-    const products = await productModel.find({});
+    const products = await productModel.find({}).sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -258,8 +257,8 @@ export {
   deleteProduct,
   getAllProducts,
   getProducts,
-  newArrivals,
   getSingleProduct,
   getTotalProductQuantity,
+  newArrivals,
   updateProduct,
 };

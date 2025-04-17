@@ -11,7 +11,7 @@ import userRoute from "./routes/user.route.js";
 
 // app config
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 // db connection
 connectDB();
@@ -22,6 +22,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
+    methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
     credentials: true,
   })
 );
@@ -43,6 +44,10 @@ app.get("/", (req, res) => {
   res.send("API Working");
 });
 
+app.get("/api/v1", (req, res) => {
+  res.send("Welcome to fluffy buds!");
+});
+
 // cloudinary configuration code
 cloudinary.config({
   cloud_name: process.env.cloud_name,
@@ -51,5 +56,5 @@ cloudinary.config({
 });
 
 app.listen(port, () => {
-  console.log(`Server Started on http://localhost:${port}`);
+  console.log(`Server is running on port ${process.env.PORT}`);
 });

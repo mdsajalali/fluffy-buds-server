@@ -4,14 +4,7 @@ import productModel from "../models/product.model.js";
 // get all products with filters, pagination, and sorting
 const getProducts = async (req, res) => {
   try {
-    const {
-      page = 1,
-      name,
-      minPrice,
-      maxPrice, 
-      category,
-      sort,
-    } = req.query;
+    const { page = 1, name, minPrice, maxPrice, category, sort } = req.query;
 
     const filters = {};
     if (name) {
@@ -20,7 +13,7 @@ const getProducts = async (req, res) => {
     if (minPrice && maxPrice) {
       filters.price = { $gte: minPrice, $lte: maxPrice };
     }
-    
+
     if (category) {
       filters.category = category;
     }
@@ -239,9 +232,8 @@ const updateProduct = async (req, res) => {
   }
 };
 
-
 // getTotalProductQuantity
- const getTotalProductQuantity = async (req, res) => {
+const getTotalProductQuantity = async (req, res) => {
   try {
     const getTotalProducts = await productModel.estimatedDocumentCount();
     res.status(200).json({ success: true, getTotalProducts });
@@ -250,12 +242,24 @@ const updateProduct = async (req, res) => {
   }
 };
 
+// get recently added products limit 4
+const newArrivals = async (req, res) => {
+  try {
+    const products = await productModel.find().sort({ createdAt: -1 }).limit(4);
+    res.status(200).json({ success: true, products });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
 export {
   createProduct,
   deleteProduct,
   getAllProducts,
   getProducts,
+  newArrivals,
   getSingleProduct,
-  updateProduct,
   getTotalProductQuantity,
+  updateProduct,
 };

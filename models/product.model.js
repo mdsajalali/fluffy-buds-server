@@ -22,14 +22,6 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    size: {
-      type: String,
-      required: true,
-    },
-    color: {
-      type: String,
-      required: true,
-    },
     images: [
       {
         url: { type: String, required: true },

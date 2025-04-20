@@ -101,7 +101,7 @@ const getSingleProduct = async (req, res) => {
 // create product
 const createProduct = async (req, res) => {
   try {
-    const { name, description, price, discount, category, size, color } =
+    const { name, description, price, discount, category } =
       req.body;
 
     if (!req.files || !req.files.images) {
@@ -149,8 +149,6 @@ const createProduct = async (req, res) => {
       price,
       discount,
       category,
-      size,
-      color,
       images: uploadedImages,
     });
 
@@ -199,7 +197,7 @@ const deleteProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, price, discount, category, size, color } =
+    const { name, description, price, discount, category } =
       req.body;
 
     const updatedProduct = await productModel.findByIdAndUpdate(
@@ -210,8 +208,6 @@ const updateProduct = async (req, res) => {
         price,
         discount,
         category,
-        size,
-        color,
       },
       { new: true }
     );

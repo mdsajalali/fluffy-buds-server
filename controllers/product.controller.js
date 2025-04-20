@@ -112,7 +112,12 @@ const createProduct = async (req, res) => {
       ? req.files.images
       : [req.files.images];
 
-    const allowedFormats = ["image/png", "image/jpeg", "image/jpg"];
+    const allowedFormats = [
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/webp",
+    ];
     const uploadedImages = [];
 
     for (const file of files) {
@@ -120,7 +125,8 @@ const createProduct = async (req, res) => {
 
       if (!allowedFormats.includes(type)) {
         return res.status(400).json({
-          errors: "Invalid file format. Only PNG, JPEG, and JPG are allowed",
+          errors:
+            "Invalid file format. Only PNG, JPEG, JPG and WEBP are allowed",
         });
       }
 
